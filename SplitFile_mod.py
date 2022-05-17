@@ -40,7 +40,7 @@ class SplitFile:
         self.history_log = history_log
         self.simple_files = self.load_txt_lines(simple_log)
         self.history = set(self.load_txt_lines(self.history_log))
-        self.error_log = 'err.log'
+        self.error_log = '../err.log'
         self.error = set(self.load_txt_lines(self.error_log))
         self.init_tfidf_matrix()
         print()
@@ -64,7 +64,7 @@ class SplitFile:
                     turn += 1
                     
                     abspath = dirpath + os.sep + filename
-                    if abspath in self.history or abspath in self.error:
+                    if filename in self.history or abspath in self.error:
                         continue
                     try:
                         print(f"turn:{turn}")
@@ -84,7 +84,7 @@ class SplitFile:
             for line in fLines:
                 line = line.strip('\n')
                 if line:
-                    lines.append(line)
+                    lines.append(line.split('\\')[-1])
         except Exception as err:
             print(err)
         return lines
@@ -127,7 +127,7 @@ class SplitFile:
         if file_type == 2:
             new_lines = self.get_lines_from_content(content)
             self.match_item_from_lines(abspath, new_lines, self.rs)
-        self.logger('HISTORY', abspath)
+        self.logger('HISTORY', abspath.split(os.sep)[-1])
 
     # 日志记录
     def logger(self, log_type, line):
@@ -243,7 +243,7 @@ class SplitFile:
         if matched_series is not None:
             self.split_item_segm(lines, matched_series, abspath)
         else:
-            self.logger('ERROR', abspath)
+            self.logger('ERROR', abspath.split(os.sep)[-1])
         return None
 
     # 将Item 1和Item 7文本写入txt
@@ -432,7 +432,7 @@ class SplitFile:
 
 
 if __name__ == '__main__':
-    split_file = SplitFile(r'C:\Users\ASUS\Desktop\testp\SEC\2013', r'C:\Users\ASUS\Desktop\testp\SEC\min-out', r'C:\Users\ASUS\Desktop\testp\SEC\out\corpus_a', r'C:\Users\ASUS\Desktop\testp\SEC\min-log\history.log', r'C:\Users\ASUS\Desktop\testp\SEC\base_gvkey_cik_2006-2020.txt')
+    split_file = SplitFile(r'..\2013', r'..\min-out', r'..\out\corpus_a', r'..\min-log\history.log', r'..\base_gvkey_cik_2006-2020.txt')
     start = time.time()
     split_file.walk()
     end = time.time()
