@@ -4,6 +4,7 @@ import os
 from threading import Thread
 import json
 import time
+import pickle
 
 max_thread = 16
 now_thread = 0
@@ -51,7 +52,12 @@ def company():
     global now_thread, max_thread
     with open('./company.idx', 'r') as f:
         lines=f.readlines()[10:]
-        for i in range(10000):
+        crawled = 0
+        crawled_path = './crawled.pickle'
+        if os.path.exists(crawled_path):
+            with open(crawled_path,'rb') as f:
+                crawled = pickle.load(f)
+        for i in range(crawled, len(lines)):
             while now_thread >= max_thread:
                 time.sleep(0.1)
             time.sleep(0.1)
@@ -65,7 +71,9 @@ def company():
             now_thread += 1
             Thread(target=get_file, args=(company_name, date_filed, CIK, part_url)).start()
             # get_file(CIK, part_url)
-            if i%100 == 0:
+            if i%10 == 0:
+                with open(crawled_path, 'wb') as f:
+                    pickle.dump(i+1,f)
                 print(i,now_thread)
 
 company()
