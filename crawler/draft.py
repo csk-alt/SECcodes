@@ -71,7 +71,7 @@ def company():
             now_thread += 1
             Thread(target=get_file, args=(company_name, date_filed, CIK, part_url)).start()
             # get_file(CIK, part_url)
-            if i%10 == 0:
+            if i%100 == 0:
                 with open(crawled_path, 'wb') as f:
                     pickle.dump(i+1,f)
                 print(i,now_thread)
